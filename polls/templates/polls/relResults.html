@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <ul>
+    {% for single_username in username %}
+        <li>{{single_username.username}} {{single_username.password}}</li>        
+    {% endfor %}
+    </ul>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<body>
+    <form method="post" action="{% url 'polls:insert' %}">  
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="your username"><br>
+        <input type="text" name="password" placeholder="your password"><br>
+        <input type="submit" value="insert"><br>
+    </form>
+    <form method="post" action="{% url 'polls:find' %}">  
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="your username"><br>
+        <input type="submit" value="find"><br>
+    </form>
+    <form method="post" action="{% url 'polls:delete' %}">  
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="your username"><br>
+        <input type="submit" value="delete"><br>
+    </form>
+    <form method="post" action="{% url 'polls:update' %}">  
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="your username"><br>
+        <input type="text" name="password" placeholder="your password"><br>
+        <input type="submit" value="update"><br>
+    </form>
+</body>
+</html>
