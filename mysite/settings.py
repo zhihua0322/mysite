@@ -83,7 +83,7 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',   # 数据库引擎
-        'NAME': 'mysite',  # 数据库名，先前创建的
+        'NAME': 'mydatabase',  # 数据库名，先前创建的
         'USER': 'django',     # 用户名，可以自己创建用户
         'PASSWORD': '19971028',  # 密码
         'HOST': 'localhost',  # mysql服务所在的主机ip

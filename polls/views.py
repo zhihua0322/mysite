@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import Choice, Question, User
+from .models import Choice, Question, User, Departments
 # from rest_framework.views import APIView
 
 
@@ -12,56 +12,56 @@ def rel(request):
 
 def insert(request):
     if request.method == 'POST':
-        get_username = request.POST.get('username',None)
-        get_password = request.POST.get('password',None)
-    user = User()
-    user.username = get_username
-    user.password = get_password
-    user.save()
-    result = User.objects.all()
+        get_deptID = request.POST.get('Dept_ID',None)
+        get_deptname = request.POST.get('Dept_Name',None)
+    department = Departments()
+    department.dept_id = get_deptID
+    department.dept_name = get_deptname
+    department.save()
+    result = Departments.objects.all()
     return render(request, 'polls/relResults.html', {
-        'username': result,
+        'departments': result,
     })
 
 def find(request):
     if request.method == 'POST':
-        get_username = request.POST.get('username',None)
-    result = User.objects.all()
+        get_deptID = request.POST.get('Dept_ID',None)
+    result = Departments.objects.all()
     return render(request, 'polls/relResults.html', {
-        'username': result,
+        'departments': result,
     })
 
 def delete(request):
     if request.method == 'POST':
-        get_username = request.POST.get('username',None)
-    User.objects.filter(username=get_username).delete()
-    result = User.objects.all()
+        get_deptID = request.POST.get('Dept_ID',None)
+    Departments.objects.filter(dept_id=get_deptID).delete()
+    result = Departments.objects.all()
     return render(request, 'polls/relResults.html', {
-        'username': result,
+        'departments': result,
     })
 
 def update(request):
     if request.method == 'POST':
-        get_username = request.POST.get('username',None)
-        get_password = request.POST.get('password',None)
+        get_deptID = request.POST.get('Dept_ID',None)
+        get_deptname = request.POST.get('Dept_Name',None)
     try:
-        delete_user = User.objects.get(username=get_username) # object to update
-    except User.DoesNotExist:
+        delete_department = Departments.objects.get(dept_id=get_deptID) # object to update
+    except Departments.DoesNotExist:
         # Redisplay the question voting form.
-        result = User.objects.all()
+        result = Departments.objects.all()
         return render(request, 'polls/relResults.html', {
-            'username': result,
+            'departments': result,
             'error_message': "No such item.",
         })
     else:
-        delete_user.password = get_password # update name
-        delete_user.save() # save object    
+        delete_department.dept_name = get_deptname # update name
+        delete_department.save() # save object    
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        result = User.objects.all()
+        # department hits the Back button.
+        result = Departments.objects.all()
         return render(request, 'polls/relResults.html', {
-            'username': result,
+            'departments': result,
         })
 
 
@@ -98,5 +98,5 @@ def vote(request, question_id):
         selected_choice.save()
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
+        # department hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
