@@ -27,5 +27,10 @@
         <input type="text" name="Dept_Name" placeholder="Dept_Name"><br>
         <input type="submit" value="update"><br>
     </form>
+    <form method="post" action="{% url 'polls:building' %}">  
+        {% csrf_token %}
+        <input type="text" name="Building" placeholder="Building"><br>
+        <input type="submit" value="find"><br>
+    </form>
 </body>
 </html>

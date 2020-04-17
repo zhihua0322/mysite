@@ -7,4 +7,12 @@
         <li>{{single_department.dept_id}} {{single_department.dept_name}}</li>        
     {% endfor %}
     </ul>
+
+    {% if building %}   
+        <ul>
+        {% for single_building in numberofCourses %}
+            <li>number of courses at {{single_building.building}}:{{single_building.num}}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 </html>
