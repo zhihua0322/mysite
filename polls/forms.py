@@ -2,7 +2,7 @@ from django import forms
 from .models import Choice, Question, User, Departments, Courses
 from django.utils.translation import ugettext_lazy as _
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Submit, Button
 from django.urls import reverse_lazy
 
 class DepartmentsForm(forms.ModelForm):
@@ -22,8 +22,11 @@ class DepartmentsForm(forms.ModelForm):
                 'max_length': _("This department's name is too long."),
             }
         }
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Save Departments', css_class = 'btn-primary'))
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.helper = FormHelper()
+    #     self.helper.form_method = 'post'
+    #     self.helper.add_input(Submit('submit', 'Save', css_class = 'btn-primary'))
+    #     self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-danger',
+    #                          href="{% url 'departments' %}"))
+

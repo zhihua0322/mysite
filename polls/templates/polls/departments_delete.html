@@ -18,7 +18,10 @@
 
 {% block content %}
     <form method="post" >{% csrf_token %}
+        <p><strong>dept_id:</strong> {{ object.dept_id }}</p>
+        <p><strong>dept_name:</strong> {{ object.dept_name }}</p>   
         <p>Are you sure you want to delete "{{ object.dept_id }}"?</p>
-        <input type="submit" value="Confirm" />
+        <input class="btn btn-success" type="submit" value="Confirm">
+        <a class="btn btn-danger" href="{% url 'polls:departments' %}" role="button">Cancel</a>
     </form>
 {% endblock %}

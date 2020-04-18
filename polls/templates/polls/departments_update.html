@@ -17,5 +17,9 @@
 {% endblock %}
 
 {% block content %}
-    {% crispy form %}
+    <form method="post">{% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Save</button>
+        <a class="btn btn-danger" href="{% url 'polls:departments' %}" role="button">Cancel</a>
+    </form>
 {% endblock %}

@@ -107,6 +107,7 @@ class DepartmentsUpdateView(generic.UpdateView):
     pk_url_kwarg = 'pk'
     def get_success_url(self):
         return reverse('polls:departments_detail', kwargs={'pk': self.object.pk})
+
     # def get(self, request, **kwargs):
     #     self.object = User.objects.get(username=self.request.user)
     #     form_class = self.get_form_class()
@@ -129,7 +130,6 @@ class DepartmentsDeleteView(generic.DeleteView):
     model = Departments
     template_name = 'polls/departments_delete.html'
     success_url = reverse_lazy('polls:departments')
-
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
