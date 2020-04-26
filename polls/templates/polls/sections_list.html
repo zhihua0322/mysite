@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-    Departments
+    Sections
 {% endblock %}
 {% block css %}
 {% endblock %}
@@ -24,27 +24,41 @@
             <div class="col">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Departments</h3>
+                        <h3 class="box-title">Sections</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
                         <table id="departments_table" class="table table-striped table-bordered" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Department ID</th>
-                                    <th>Department Name</th>
+                                    <th>CRN</th>
+                                    <th>Subject Number</th>
+                                    <th>CreditHours</th>
+                                    <th>Section</th>
+                                    <th>SectionType</th>
+                                    <th>StartTime</th>
+                                    <th>EndTime</th>
+                                    <th>DayOfWeek</th>
+                                    <th>GPA</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for single_department in departments_list %}
+                                {% for section in sections_list %}
                                     <tr>
-                                        <td>{{single_department.dept_id}}</td>
-                                        <td>{{single_department.dept_name}}</td>
+                                        <td>{{section.crn}}</td>
+                                        <td>{{section.subject_number}}</td>
+                                        <td>{{section.credithours}}</td>
+                                        <td>{{section.section}}</td>
+                                        <td>{{section.sectiontype}}</td>
+                                        <td>{{section.starttime}}</td>
+                                        <td>{{section.endtime}}</td>
+                                        <td>{{section.dayofWeek}}</td>
+                                        <td>{{section.gpa}}</td>
                                         <td>
                                             <div class="btn-group ml-auto" role="group" aria-label="Basic example">
-                                                <a class="btn btn-success" href="{% url 'polls:departments_update' department_slug=single_department.dept_id%}" role="button">Update</a>
-                                                <a class="btn btn-danger" href="{% url 'polls:departments_delete' department_slug=single_department.dept_id%}" role="button">Delete</a>
+                                                <a class="btn btn-success" href="{% url 'polls:departments_update' pk=single_department.dept_id%}" role="button">Update</a>
+                                                <a class="btn btn-danger" href="{% url 'polls:departments_delete' pk=single_department.dept_id%}" role="button">Delete</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -52,9 +66,16 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Department ID</th>
-                                    <th>Department Name</th>
-                                    <th>Action</th> 
+                                    <th>CRN</th>
+                                    <th>Subject Number</th>
+                                    <th>CreditHours</th>
+                                    <th>Section</th>
+                                    <th>SectionType</th>
+                                    <th>StartTime</th>
+                                    <th>EndTime</th>
+                                    <th>DayOfWeek</th>
+                                    <th>GPA</th>
+                                    <th>Action</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -90,7 +111,7 @@
             "ordering": true,    
             "info": true,        
             "autoWidth": false,
-            {% comment %} "initComplete": function () {
+            "initComplete": function () {
                 var api = this.api();
                 var indexes = api.columns().indexes().flatten();
                 api.columns().indexes().flatten().each(function(i) {
@@ -111,7 +132,7 @@
                         });
                     }
                 });
-            } {% endcomment %}
+            }
         });
     });
     </script>

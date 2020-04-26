@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-    Departments
+    Classes
 {% endblock %}
 {% block css %}
 {% endblock %}
@@ -10,7 +10,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <div class="btn-group ml-auto" role="group" aria-label="Basic example">
-                    <a class="btn btn-primary" href="{% url 'polls:departments_create' %}" role="button">Create</a>
+                    <a class="btn btn-primary" href="{% url 'polls:classes_create' %}" role="button">Create</a>
                 </div>
             </ol>
         </nav>
@@ -24,27 +24,27 @@
             <div class="col">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Departments</h3>
+                        <h3 class="box-title">Classes</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
                         <table id="departments_table" class="table table-striped table-bordered" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Department ID</th>
-                                    <th>Department Name</th>
+                                    <th>Subject Number</th>
+                                    <th>Title</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for single_department in departments_list %}
+                                {% for class in classes_list %}
                                     <tr>
-                                        <td>{{single_department.dept_id}}</td>
-                                        <td>{{single_department.dept_name}}</td>
+                                        <td>{{class.subject_number}}</td>
+                                        <td>{{class.title}}</td>
                                         <td>
                                             <div class="btn-group ml-auto" role="group" aria-label="Basic example">
-                                                <a class="btn btn-success" href="{% url 'polls:departments_update' department_slug=single_department.dept_id%}" role="button">Update</a>
-                                                <a class="btn btn-danger" href="{% url 'polls:departments_delete' department_slug=single_department.dept_id%}" role="button">Delete</a>
+                                                <a class="btn btn-success" href="{% url 'polls:classes_update' class_slug=class.class_slug%}" role="button">Update</a>
+                                                <a class="btn btn-danger" href="{% url 'polls:classes_delete' class_slug=class.class_slug%}" role="button">Delete</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -52,8 +52,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Department ID</th>
-                                    <th>Department Name</th>
+                                    <th>Subject Number</th>
+                                    <th>Title</th>
                                     <th>Action</th> 
                                 </tr>
                             </tfoot>

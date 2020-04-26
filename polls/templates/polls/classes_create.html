@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    Departments
+    Classes
 {% endblock %}
 
 {% block breadcrumb %}
@@ -10,15 +10,16 @@
     <section class="content-header">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Detail</li>
+                <li class="breadcrumb-item active" aria-current="page">Create</li>
             </ol>
         </nav>
     </section>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <p><strong>Department ID:</strong> {{ object.dept_id }}</p>
-        <p><strong>Department Name:</strong> {{ object.dept_name }}</p>   
-    </div>
+    <form method="post">{% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Save</button>
+        <a class="btn btn-danger" href="{% url 'polls:classes' %}" role="button">Cancel</a>
+    </form>
 {% endblock %}
