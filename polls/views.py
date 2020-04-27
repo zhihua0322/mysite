@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.db.models import Count
-from .models import Departments, Classes, Sections
-from .forms import DepartmentsForm, ClassesForm, SectionsForm
+from .models import Departments, Classes, Sections, Professor
+from .forms import DepartmentsForm, ClassesForm, SectionsForm, ProfessorForm
 
 # from rest_framework.views import APIView
 
@@ -84,11 +84,15 @@ from .forms import DepartmentsForm, ClassesForm, SectionsForm
 #     })
 
 
-def homepage(request):
-    return render(request, 'homepage.html')
-
-def dashboard(request):
-    return render(request, 'polls/dashboard.html')
+class HomePageView(generic.TemplateView):
+    template_name = "homepage.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['numofDepartments'] = Departments.objects.count()
+        context['numofClasses'] = Classes.objects.count()
+        context['numofSections'] = Sections.objects.count()
+        context['numofProfessors'] = Professor.objects.count()
+        return context
 
 class DepartmentsListView(generic.ListView):
     model = Departments
@@ -129,7 +133,13 @@ class DepartmentsDetailView(generic.DetailView):
     slug_url_kwarg = 'department_slug'
     pk_url_kwarg = 'department_slug'
     template_name = 'polls/departments_detail.html'
-
+    context_object_name = 'department'
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['classes_list'] = Classes.objects.filter(departments__dept_id=self.object.dept_id)
+        return context
 
 class DepartmentsDeleteView(generic.DeleteView):
     model = Departments
@@ -154,17 +164,23 @@ class ClassesDetailView(generic.DetailView):
     template_name = 'polls/classes_detail.html'
     context_object_name = 'class'
     slug_url_kwarg = 'class_slug'
+    slug_field = 'class_slug'
+    # pk_url_kwarg = 'class_slug'
+    # def get_object(self, queryset=None):
+        # return Classes.objects.get(class_slug=self.slug_url_kwarg)
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['sections_list'] = Sections.objects.filter(subject_number=self.object.class_slug)
-        context['departments_list'] = Departments.objects.filter(classes_contains__subject_number__startswith=self.object.class_slug)
+        context['sections_list'] = Sections.objects.filter(subject_number=self.object.subject_number)
+        context['departments_list'] = Departments.objects.filter(classes_contains__subject_number__startswith=self.object.subject_number)
         return context
 
 class ClassesDeleteView(generic.DeleteView):
     model = Classes
     context_object_name = 'class'
+    slug_url_kwarg = 'class_slug'
+    slug_field = 'class_slug'
     template_name = 'polls/classes_delete.html'
     success_url = reverse_lazy('polls:classes')
 
@@ -173,13 +189,17 @@ class ClassesUpdateView(generic.UpdateView):
     form_class = ClassesForm
     template_name = 'polls/classes_update.html'
     slug_url_kwarg = 'class_slug'
+    slug_field = 'class_slug'
     def get_success_url(self):
         return reverse('polls:classes_detail', kwargs={'class_slug': self.object.class_slug})
+
 
 class SectionsListView(generic.ListView):
     model = Sections
     context_object_name = 'sections_list'
     template_name = 'polls/sections_list.html'
+    def get_queryset(self):
+        return Sections.objects.filter(gpa__isnull=False)
 
 class SectionsCreateView(generic.CreateView):
     model = Sections
@@ -187,6 +207,75 @@ class SectionsCreateView(generic.CreateView):
     template_name = 'polls/sections_create.html'
     slug_url_kwarg = 'crn'
 
+class SectionsDetailView(generic.DetailView):
+    model = Sections
+    template_name = 'polls/sections_detail.html'
+    context_object_name = 'section'
+    slug_url_kwarg = 'section_slug'
+    slug_field = 'crn'
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['professors_list'] = Professor.objects.filter(sections_teaches__crn__startswith=self.object.crn)
+        return context
+
+class SectionsDeleteView(generic.DeleteView):
+    model = Sections
+    context_object_name = 'section'
+    slug_url_kwarg = 'section_slug'
+    slug_field = 'crn'
+    template_name = 'polls/sections_delete.html'
+    success_url = reverse_lazy('polls:sections')
+
+class SectionsUpdateView(generic.UpdateView):
+    model = Sections
+    form_class = SectionsForm
+    template_name = 'polls/sections_update.html'
+    slug_url_kwarg = 'section_slug'
+    slug_field = 'crn'
+    def get_success_url(self):
+        return reverse('polls:sections_detail', kwargs={'section_slug': self.object.crn})
+
+
+class ProfessorListView(generic.ListView):
+    model = Professor
+    context_object_name = 'professor_list'
+    template_name = 'polls/professor_list.html'
+
+class ProfessorCreateView(generic.CreateView):
+    model = Professor
+    form_class = ProfessorForm
+    template_name = 'polls/professor_create.html'
+    slug_url_kwarg = 'professor_slug'
+
+class ProfessorUpdateView(generic.UpdateView):
+    model = Professor
+    form_class = ProfessorForm
+    template_name = 'polls/professor_update.html'
+    slug_url_kwarg = 'professor_slug'
+    pk_url_kwarg = 'professor_slug'
+    def get_success_url(self):
+        return reverse('polls:professor_detail', kwargs={'professor_slug': self.object.netid})
+
+class ProfessorDetailView(generic.DetailView):
+    model = Professor
+    slug_url_kwarg = 'professor_slug'
+    pk_url_kwarg = 'professor_slug'
+    template_name = 'polls/professor_detail.html'
+    context_object_name = 'professor'
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['sections_list'] = Sections.objects.filter(professor__netid=self.object.netid)
+        return context
+
+class ProfessorDeleteView(generic.DeleteView):
+    model = Professor
+    pk_url_kwarg = 'professor_slug'
+    template_name = 'polls/professor_delete.html'
+    success_url = reverse_lazy('polls:professor')
 # class IndexView(generic.ListView):
 #     template_name = 'polls/index.html'
 #     context_object_name = 'latest_question_list'

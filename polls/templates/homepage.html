@@ -6,13 +6,15 @@
     <h1 class="text-center titulo">CS411 Project</h1>
     <h2>UIUC Schedule Generator</h2>  
     <img src="{% static 'images/teamlogo.png' %}" style="width:600px;height:368px;">
-    <ul class="list-group  list-group-horizontal skull">
-      <li class="list-group-item"><strong>Livros: </strong> {{ num_books }}</li>
-      <li class="list-group-item"><strong>Cópias: </strong> {{ num_instances }}</li>
-      <li class="list-group-item"><strong>Cópias disponíveis: </strong> {{ num_instances_available }}</li>
-      <li class="list-group-item"><strong>Autores: </strong> {{ num_authors }}</li>
-    </ul>
-    <br>
-    <p>Você visitou a biblioteca secreta <strong>{{ num_visits }}</strong>{% if num_visits == 1 %} vez{% else %} vezes{% endif %}.</p>
+    <div class="d-flex">
+      <ul class="list-group mx-auto justify-content-center" style="width:50%" >
+        <li class="list-group-item"><strong>Number of Departments: </strong> {{ numofDepartments }}</li>
+        <li class="list-group-item"><strong>Number of Classes: </strong> {{ numofClasses }}</li>
+        <li class="list-group-item"><strong>Number of Sections: </strong> {{ numofSections }}</li>
+        <li class="list-group-item"><strong>Number of Professors: </strong> {{ numofProfessors }}</li>
+      </ul>
+    </div>
+
 <div> 
+
 {% endblock %}

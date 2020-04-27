@@ -39,7 +39,7 @@
                             <tbody>
                                 {% for class in classes_list %}
                                     <tr>
-                                        <td>{{class.subject_number}}</td>
+                                        <td><a href="{% url 'polls:classes_detail' class_slug=class.class_slug%}">{{class.subject_number}}</a></td>
                                         <td>{{class.title}}</td>
                                         <td>
                                             <div class="btn-group ml-auto" role="group" aria-label="Basic example">

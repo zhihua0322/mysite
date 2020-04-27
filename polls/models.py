@@ -24,6 +24,8 @@ class Classes(models.Model):
         value = self.subject_number
         self.class_slug = slugify(value, allow_unicode=True)
         super().save(*args, **kwargs)
+    def __str__(self):
+        return self.subject_number
     class Meta:
         managed = True
         db_table = 'classes'
@@ -35,6 +37,8 @@ class Departments(models.Model):
     classes_contains = models.ManyToManyField(Classes, through='ClassDept')
     def get_absolute_url(self):
         return reverse('polls:departments_detail', kwargs={'department_slug': self.dept_id})
+    def __str__(self):
+        return self.dept_id + ' ' + self.dept_name
     class Meta:
         managed = True
         db_table = 'departments'
@@ -60,7 +64,10 @@ class Sections(models.Model):
     endtime = models.CharField(db_column='EndTime', max_length=15, blank=True, null=True)  # Field name made lowercase.
     dayofweek = models.CharField(db_column='DayOfWeek', max_length=10, blank=True, null=True)  # Field name made lowercase.
     gpa = models.CharField(db_column='GPA', max_length=5, blank=True, null=True)  # Field name made lowercase.
-
+    def __str__(self):
+        return self.crn + ' ' + self.name
+    def get_absolute_url(self):
+        return reverse('polls:sections_detail', kwargs={'section_slug': self.crn})
     class Meta:
         managed = True
         db_table = 'sections'
@@ -71,6 +78,10 @@ class Professor(models.Model):
     name = models.CharField(db_column='Name', max_length=30, blank=True, null=True)  # Field name made lowercase.
     email = models.CharField(db_column='Email', max_length=30, blank=True, null=True)  # Field name made lowercase.
     sections_teaches = models.ManyToManyField(Sections, through='Teaches')
+    def __str__(self):
+        return self.name
+    def get_absolute_url(self):
+        return reverse('polls:professor_detail', kwargs={'professor_slug': self.netid})
     class Meta:
         managed = True
         db_table = 'professor'

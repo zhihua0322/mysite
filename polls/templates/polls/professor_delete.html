@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Professor
+{% endblock %}
+
+{% block breadcrumb %}
+<!-- Content Header (Page header) -->
+    <section class="content-header">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Delete</li>
+            </ol>
+        </nav>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <form method="post" >{% csrf_token %}
+        <p><strong>NetID:</strong> {{ professor.netid }}</p>
+        <p><strong>Name:</strong> {{ professor.name }}</p>
+        <p><strong>Email:</strong> {{ professor.email }}</p>
+        <p>Are you sure you want to delete "{{ professor.netid }}"?</p>
+        <input class="btn btn-success" type="submit" value="Confirm">
+        <a class="btn btn-danger" href="{% url 'polls:professor' %}" role="button">Cancel</a>
+    </form>
+{% endblock %}

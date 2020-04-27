@@ -1,8 +1,12 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
+{% load static%}
 
 {% block title %}
     Classes
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/sections_datatables.css' %}"/>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -12,8 +16,8 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item active" aria-current="page">Detail</li>
                 <div class="btn-group ml-auto" role="group" aria-label="Basic example">
-                    <a class="btn btn-success" href="{% url 'polls:departments_create' %}" role="button">Update</a>
-                    <a class="btn btn-danger" href="{% url 'polls:departments_create' %}" role="button">Delete</a>
+                    <a class="btn btn-success" href="{% url 'polls:classes_update' class_slug=class.class_slug%}" role="button">Update</a>
+                    <a class="btn btn-danger" href="{% url 'polls:classes_delete' class_slug=class.class_slug%}" role="button">Delete</a>
                 </div>
             </ol>
         </nav>
@@ -21,7 +25,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <section class="content">
         <p><strong>Subject Number:</strong> {{ class.subject_number }}</p>
         <p><strong>Title:</strong> {{ class.title }}</p>
         <p><strong>Departments:</strong>
@@ -31,9 +35,6 @@
             {% endfor %}
             </ul>
         </p>
-    </div>
-
-    <section class="content">
         <div class="row">
             <div class="col">
                 <div class="box">
@@ -42,7 +43,7 @@
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="departments_table" class="table table-striped table-bordered" style="width:100%">
+                        <table id="sections_table" class="table table-striped table-bordered" style="white-space: nowrap">
                             <thead>
                                 <tr>
                                     <th>CRN</th>
@@ -55,27 +56,21 @@
                                     <th>EndTime</th>
                                     <th>DayOfWeek</th>
                                     <th>GPA</th>
-                                    {% comment %} <th>Action</th> {% endcomment %}
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for single_section in sections_list %}
                                     <tr>
-                                        <td>{{single_section.crn}}</td>
+                                        <td><a href="{% url 'polls:sections_detail' section_slug=single_section.crn%}">{{single_section.crn}}</a></td>
                                         <td>{{single_section.subject_number}}</td>
                                         <td>{{single_section.name}}</td>
                                         <td>{{single_section.credithours}}</td>
+                                        <td>{{single_section.section}}</td>
                                         <td>{{single_section.sectiontype}}</td>
                                         <td>{{single_section.starttime}}</td>
                                         <td>{{single_section.endtime}}</td>
                                         <td>{{single_section.dayofweek}}</td>
                                         <td>{{single_section.gpa}}</td>
-                                        {% comment %} <td>
-                                            <div class="btn-group ml-auto" role="group" aria-label="Basic example">
-                                                <a class="btn btn-success" href="{% url 'polls:departments_update' pk=single_department.dept_id%}" role="button">Update</a>
-                                                <a class="btn btn-danger" href="{% url 'polls:departments_delete' pk=single_department.dept_id%}" role="button">Delete</a>
-                                            </div>
-                                        </td> {% endcomment %}
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -120,30 +115,35 @@
         }); {% endcomment %}
     $(document).ready(function() {
         $('select').selectpicker();
-        $('#departments_table').DataTable({
+        $('#sections_table').DataTable({
             "paging": true,       
             "lengthChange": true, 
             "searching": true,   
             "ordering": true,    
             "info": true,        
-            "autoWidth": false,
+            "autoWidth": true,
+            "scrollX": true,
+            "pageLength": 50,
             "initComplete": function () {
                 var api = this.api();
+                var indexes = api.columns().indexes().flatten();
                 api.columns().indexes().flatten().each(function(i) {
-                    var column = api.column(i);
-                    var select = $('<select class="selectpicker"><option value=""></option></select>')
-                        .appendTo( $(column.footer()).empty() )
-                        .on('change', function () {
-                            var val = $.fn.dataTable.util.escapeRegex(
-                                $(this).val()
-                            );
-                            column
-                                .search( val ? '^'+val+'$' : '', true, false )
-                                .draw();
+                    if (i == 3 || i == 5 || i == 6 || i == 7 || i ==8) {
+                        var column = api.column(i);
+                        var select = $('<select class="selectpicker" data-container="body"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            });
+                        column.data().unique().sort().each( function ( d, j ) {
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
                         });
-                    column.data().unique().sort().each( function ( d, j ) {
-                        select.append( '<option value="'+d+'">'+d+'</option>' )
-                    });
+                    }
                 });
             }
         });
