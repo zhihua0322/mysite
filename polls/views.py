@@ -138,7 +138,8 @@ class DepartmentsDetailView(generic.DetailView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['classes_list'] = Classes.objects.filter(departments__dept_id=self.object.dept_id)
+        context['classes_list'] = Classes.objects.raw('SELECT `classes`.`Subject_Number`, `classes`.`Title`, `classes`.`class_slug` FROM `classes` INNER JOIN `class_dept` ON (`classes`.`Subject_Number` = `class_dept`.`Subject_Number`) WHERE `class_dept`.`Dept_ID` = %s', [self.object.dept_id])
+        # Classes.objects.filter(departments__dept_id=self.object.dept_id)
         return context
 
 class DepartmentsDeleteView(generic.DeleteView):
@@ -172,8 +173,10 @@ class ClassesDetailView(generic.DetailView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['sections_list'] = Sections.objects.filter(subject_number=self.object.subject_number)
-        context['departments_list'] = Departments.objects.filter(classes_contains__subject_number__startswith=self.object.subject_number)
+        context['sections_list'] = Sections.objects.raw('SELECT `sections`.`CRN`, `sections`.`Subject_Number`, `sections`.`Name`, `sections`.`CreditHours`, `sections`.`Section`, `sections`.`SectionType`, `sections`.`StartTime`, `sections`.`EndTime`, `sections`.`DayOfWeek`, `sections`.`GPA` FROM `sections` WHERE `sections`.`Subject_Number` = %s', [self.object.subject_number])
+        # Sections.objects.filter(subject_number=self.object.subject_number)
+        context['departments_list'] = Departments.objects.raw('SELECT `departments`.`Dept_ID`, `departments`.`Dept_Name` FROM `departments` INNER JOIN `class_dept` ON (`departments`.`Dept_ID` = `class_dept`.`Dept_ID`) WHERE `class_dept`.`Subject_Number` LIKE BINARY %s', [self.object.subject_number])
+        # Departments.objects.filter(classes_contains__subject_number__startswith=self.object.subject_number)
         return context
 
 class ClassesDeleteView(generic.DeleteView):
@@ -199,7 +202,8 @@ class SectionsListView(generic.ListView):
     context_object_name = 'sections_list'
     template_name = 'polls/sections_list.html'
     def get_queryset(self):
-        return Sections.objects.filter(gpa__isnull=False)
+        return Sections.objects.raw('SELECT `sections`.`CRN`, `sections`.`Subject_Number`, `sections`.`Name`, `sections`.`CreditHours`, `sections`.`Section`, `sections`.`SectionType`, `sections`.`StartTime`, `sections`.`EndTime`, `sections`.`DayOfWeek`, `sections`.`GPA` FROM `sections` WHERE `sections`.`GPA` IS NOT NULL')
+        # Sections.objects.filter(gpa__isnull=False)
 
 class SectionsCreateView(generic.CreateView):
     model = Sections
@@ -217,7 +221,8 @@ class SectionsDetailView(generic.DetailView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['professors_list'] = Professor.objects.filter(sections_teaches__crn__startswith=self.object.crn)
+        context['professors_list'] = Professor.objects.raw('SELECT `professor`.`NetID`, `professor`.`Name`, `professor`.`Email` FROM `professor` INNER JOIN `teaches` ON (`professor`.`NetID` = `teaches`.`NetID`) WHERE `teaches`.`CRN` LIKE BINARY %s', [self.object.crn])
+        # Professor.objects.filter(sections_teaches__crn__startswith=self.object.crn)
         return context
 
 class SectionsDeleteView(generic.DeleteView):
@@ -268,7 +273,8 @@ class ProfessorDetailView(generic.DetailView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['sections_list'] = Sections.objects.filter(professor__netid=self.object.netid)
+        context['sections_list'] = Sections.objects.raw('SELECT `sections`.`CRN`, `sections`.`Subject_Number`, `sections`.`Name`, `sections`.`CreditHours`, `sections`.`Section`, `sections`.`SectionType`, `sections`.`StartTime`, `sections`.`EndTime`, `sections`.`DayOfWeek`, `sections`.`GPA` FROM `sections` INNER JOIN `teaches` ON (`sections`.`CRN` = `teaches`.`CRN`) WHERE `teaches`.`NetID` = %s', [self.object.netid])
+        # Sections.objects.filter(professor__netid=self.object.netid)
         return context
 
 class ProfessorDeleteView(generic.DeleteView):
